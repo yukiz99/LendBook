@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.mapper.LendMapper">
+
+<!-- 
+    private long serNum;
+    private long bookId;
+    private long readerId;
+    private Date lendDate;
+    private Date backDate;
+ -->
+ 
+ <resultMap type="Lend" id="LendMap">
+     <id column="ser_num" property="serNum"/>
+     <result column="book_id" property="bookId"/>
+     <result column="reader_id" property="readerId"/>
+     <result column="lend_date" property="lendDate"/>
+     <result column="back_date" property="backDate"/>
+      <association property="book" javaType="Book">
+          <id column="book_id" property="bookId"/>
+	      <result column="name" property="name"/>
+	      <result column="author" property="author"/>
+	      <result column="publish" property="publish"/>
+	      <result column="isbn" property="isbn"/>
+	      <result column="introduction" property="introduction"/>
+	      <result column="number" property="number"/>
+      </association>
+    </resultMap> 
+
+
+
+    <update id="returnBookOne">
+        update lend_list set back_date = sysdate()
+         where book_id = #{bookId}  and reader_id = #{readerId} and back_date is null
+    </update>
+    <update id="returnBookTwo">
+        update book set number = number + 1 where book_id = #{bookId}
+    </update>
+    <insert id="lendBookOne">
+        insert into lend_list values(null , #{bookId} , #{readerId} , sysdate() , null)
+    </insert>
+    <update id="lendBookTwo">
+        update book set number = number - 1 where book_id = #{bookId}
+    </update>
+    <select id="findAll" resultMap="LendMap">
+        select * from lend_list,book where lend_list.book_id=book.book_id 
+    </select>
+    <select id="findAllByReaderId" resultMap="LendMap">
+        select * from lend_list,book
+         where reader_id = #{readerId} and  lend_list.book_id=book.book_id 
+    </select>
+    <delete id="deleteBySerNum">
+        delete from lend_list where ser_num = #{serNum}
+    </delete>
+</mapper>

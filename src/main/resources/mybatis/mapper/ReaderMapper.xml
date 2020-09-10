@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.mapper.ReaderMapper">
+
+
+<!-- 
+   
+    private long readerId;
+    private String username;
+    private String password;
+    private String sex;
+    private String address;
+    private String phone;
+ -->
+
+  <resultMap type="Reader" id="ReaderMap">
+     <id column="reader_id" property="readerId"/>
+     <result column="username" property="username"/>
+     <result column="password" property="password"/>
+     <result column="sex" property="sex"/>
+     <result column="address" property="address"/>
+     <result column="phone" property="phone"/>
+   </resultMap> 
+   
+   
+    <select id="findAll" resultMap="ReaderMap">
+        select * from reader
+    </select>
+    <select id="findByReaderId" resultMap="ReaderMap">
+        select * from reader where reader_id = #{readerId}
+    </select>
+    <select id="queryByUsername" resultMap="ReaderMap">
+        select*from reader 
+        where username like concat(concat('%',#{searchWord}),'%')
+    </select>
+    <delete id="deleteByReaderId">
+        delete from reader where reader_id = #{readerId}
+    </delete>
+    <update id="edit">
+        update reader 
+        set sex = #{sex}, username=#{username},address = #{address} ,phone = #{phone}
+        where reader_id = #{readerId}
+    </update>
+    <insert id="add">
+        insert into reader values(null, #{username},#{password},#{sex},#{address},#{phone})
+    </insert>
+    
+   <update id="resetPassword">
+      update reader set password=#{password} where reader_id=#{readerId}
+   </update>
+</mapper>
